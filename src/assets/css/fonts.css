@@ -1,0 +1,23 @@
+@font-face {
+  font-family: 'EBGaramond-Italic';
+  src: url('../fonts/EBGaramond-Italic.eot');
+  src: url('../fonts/EBGaramond-Italic.woff2') format('woff2'),
+    url('../fonts/EBGaramond-Italic.woff') format('woff'),
+    url('../fonts/EBGaramond-Italic.ttf') format('truetype'),
+    url('../fonts/EBGaramond-Italic.svg#EBGaramond-Italic') format('svg'),
+    url('../fonts/EBGaramond-Italic.eot?#iefix') format('embedded-opentype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Montserrat-Regular';
+  src: url('../fonts/Montserrat-Regular.eot');
+  src: url('../fonts/Montserrat-Regular.woff2') format('woff2'),
+    url('../fonts/Montserrat-Regular.woff') format('woff'),
+    url('../fonts/Montserrat-Regular.ttf') format('truetype'),
+    url('../fonts/Montserrat-Regular.svg#Montserrat-Regular') format('svg'),
+    url('../fonts/Montserrat-Regular.eot?#iefix') format('embedded-opentype');
+  font-weight: normal;
+  font-style: normal;
+}
