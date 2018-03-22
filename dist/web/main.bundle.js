@@ -549,6 +549,108 @@ module.exports = function escape(url) {
 
 /***/ }),
 
+/***/ "./node_modules/deepmerge/dist/es.js":
+/*!*******************************************!*\
+  !*** ./node_modules/deepmerge/dist/es.js ***!
+  \*******************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+var isMergeableObject = function isMergeableObject(value) {
+	return isNonNullObject(value)
+		&& !isSpecial(value)
+};
+
+function isNonNullObject(value) {
+	return !!value && typeof value === 'object'
+}
+
+function isSpecial(value) {
+	var stringValue = Object.prototype.toString.call(value);
+
+	return stringValue === '[object RegExp]'
+		|| stringValue === '[object Date]'
+		|| isReactElement(value)
+}
+
+// see https://github.com/facebook/react/blob/b5ac963fb791d1298e7f396236383bc955f916c1/src/isomorphic/classic/element/ReactElement.js#L21-L25
+var canUseSymbol = typeof Symbol === 'function' && Symbol.for;
+var REACT_ELEMENT_TYPE = canUseSymbol ? Symbol.for('react.element') : 0xeac7;
+
+function isReactElement(value) {
+	return value.$$typeof === REACT_ELEMENT_TYPE
+}
+
+function emptyTarget(val) {
+	return Array.isArray(val) ? [] : {}
+}
+
+function cloneUnlessOtherwiseSpecified(value, options) {
+	return (options.clone !== false && options.isMergeableObject(value))
+		? deepmerge(emptyTarget(value), value, options)
+		: value
+}
+
+function defaultArrayMerge(target, source, options) {
+	return target.concat(source).map(function(element) {
+		return cloneUnlessOtherwiseSpecified(element, options)
+	})
+}
+
+function mergeObject(target, source, options) {
+	var destination = {};
+	if (options.isMergeableObject(target)) {
+		Object.keys(target).forEach(function(key) {
+			destination[key] = cloneUnlessOtherwiseSpecified(target[key], options);
+		});
+	}
+	Object.keys(source).forEach(function(key) {
+		if (!options.isMergeableObject(source[key]) || !target[key]) {
+			destination[key] = cloneUnlessOtherwiseSpecified(source[key], options);
+		} else {
+			destination[key] = deepmerge(target[key], source[key], options);
+		}
+	});
+	return destination
+}
+
+function deepmerge(target, source, options) {
+	options = options || {};
+	options.arrayMerge = options.arrayMerge || defaultArrayMerge;
+	options.isMergeableObject = options.isMergeableObject || isMergeableObject;
+
+	var sourceIsArray = Array.isArray(source);
+	var targetIsArray = Array.isArray(target);
+	var sourceAndTargetTypesMatch = sourceIsArray === targetIsArray;
+
+	if (!sourceAndTargetTypesMatch) {
+		return cloneUnlessOtherwiseSpecified(source, options)
+	} else if (sourceIsArray) {
+		return options.arrayMerge(target, source, options)
+	} else {
+		return mergeObject(target, source, options)
+	}
+}
+
+deepmerge.all = function deepmergeAll(array, options) {
+	if (!Array.isArray(array)) {
+		throw new Error('first argument should be an array')
+	}
+
+	return array.reduce(function(prev, next) {
+		return deepmerge(prev, next, options)
+	}, {})
+};
+
+var deepmerge_1 = deepmerge;
+
+/* harmony default export */ __webpack_exports__["default"] = (deepmerge_1);
+
+
+/***/ }),
+
 /***/ "./node_modules/exenv/index.js":
 /*!*************************************!*\
   !*** ./node_modules/exenv/index.js ***!
@@ -20096,24 +20198,65 @@ module.exports = __webpack_require__.p + "src/assets/fonts/Montserrat-Regular.wo
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.default = void 0;
+exports.default = exports.SPINNER_TYPES = void 0;
 
-var _react = _interopRequireDefault(__webpack_require__(/*! react */ "react"));
+var _react = _interopRequireWildcard(__webpack_require__(/*! react */ "react"));
 
 var _reactModal = _interopRequireDefault(__webpack_require__(/*! react-modal */ "./node_modules/react-modal/lib/index.js"));
 
+var _propTypes = _interopRequireDefault(__webpack_require__(/*! prop-types */ "./node_modules/prop-types/index.js"));
+
 var _reactSpinkit = _interopRequireDefault(__webpack_require__(/*! react-spinkit */ "./node_modules/react-spinkit/dist/index.js"));
+
+var _deepmerge = _interopRequireDefault(__webpack_require__(/*! deepmerge */ "./node_modules/deepmerge/dist/es.js"));
 
 var _fonts = _interopRequireDefault(__webpack_require__(/*! ./assets/css/fonts.css */ "./src/assets/css/fonts.css"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = Object.defineProperty && Object.getOwnPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : {}; if (desc.get || desc.set) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } } newObj.default = obj; return newObj; } }
+
+function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+
 function _extends() { _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; }; return _extends.apply(this, arguments); }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
+
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; var ownKeys = Object.keys(source); if (typeof Object.getOwnPropertySymbols === 'function') { ownKeys = ownKeys.concat(Object.getOwnPropertySymbols(source).filter(function (sym) { return Object.getOwnPropertyDescriptor(source, sym).enumerable; })); } ownKeys.forEach(function (key) { _defineProperty(target, key, source[key]); }); } return target; }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
 function _objectWithoutProperties(source, excluded) { if (source == null) return {}; var target = {}; var sourceKeys = Object.keys(source); var key, i; for (i = 0; i < sourceKeys.length; i++) { key = sourceKeys[i]; if (excluded.indexOf(key) >= 0) continue; target[key] = source[key]; } if (Object.getOwnPropertySymbols) { var sourceSymbolKeys = Object.getOwnPropertySymbols(source); for (i = 0; i < sourceSymbolKeys.length; i++) { key = sourceSymbolKeys[i]; if (excluded.indexOf(key) >= 0) continue; if (!Object.prototype.propertyIsEnumerable.call(source, key)) continue; target[key] = source[key]; } } return target; }
 
-var modalStyle = {
-  overlay: {
+/**
+_________ MODAL _________
+|                       |
+| ______ CONTENT ______ |
+| |                   | |
+| | _____ INNER _____ | |
+| | |               | | |
+| | |     TITLE     | | |
+| | |    SPINNER    | | |
+| | |   SUB TITLE   | | |
+| | |   CHILDREN    | | |
+| | |_______________| | |
+| |___________________| |
+|_______________________|
+**/
+var SPINNER_TYPES = ['circle', 'cube-grid', 'wave', 'folding-cube', 'three-bounce', 'double-bounce', 'wandering-cubes', 'chasing-dots', 'rotating-plane', 'pulse', 'wordpress', 'ball-grid-beat', 'ball-grid-pulse', 'line-spin-fade-spinner', 'ball-spin-fade-loader', 'ball-pulse-rise', 'line-scale', 'line-scale-pulse-out', 'line-scale-pulse-out-rapid', 'pacman', 'line-scale-party', 'ball-triangle-path', 'ball-scale-multiple', 'ball-scale-ripple-multiple', 'ball-pulse-sync', 'ball-beat', 'ball-zig-zag', 'ball-zig-zag-deflect', 'ball-clip-rotate-pulse', 'ball-clip-rotate-multiple', 'ball-clip-rotate', 'ball-scale-ripple', 'triangle-skew-spin'];
+exports.SPINNER_TYPES = SPINNER_TYPES;
+var defaultTheme = {
+  outer: {
     backgroundColor: 'rgba(255, 102, 0, 1)'
   },
   content: {
@@ -20126,43 +20269,134 @@ var modalStyle = {
     bottom: 0,
     display: 'flex',
     alignItems: 'center',
-    justifyContent: 'center'
+    justifyContent: 'center',
+    color: 'white',
+    fontFamily: 'Montserrat',
+    fontStyle: 'bold'
+  },
+  inner: {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    textAlign: 'center'
+  },
+  title: {
+    marginBottom: '1em',
+    letterSpacing: '6px',
+    textTransform: 'uppercase'
+  },
+  subTitle: {
+    marginTop: '1.2em',
+    letterSpacing: '0.1px',
+    wordWrap: 'wrap',
+    fontStyle: 'italic',
+    fontFamily: 'EB Garamond'
   }
 };
-var modalInnerStyle = {
-  color: 'white',
-  fontFamily: 'Montserrat',
-  fontStyle: 'bold',
-  display: 'flex',
-  flexDirection: 'column',
-  alignItems: 'center',
-  textAlign: 'center'
-};
-var modalTitleStyle = {
-  marginBottom: '1em',
-  letterSpacing: '6px',
-  textTransform: 'uppercase'
-};
-var modalSubtitleStyle = {
-  marginTop: '1.2em',
-  letterSpacing: '0.1px',
-  wordWrap: 'wrap',
-  fontStyle: 'italic',
-  fontFamily: 'EB Garamond'
-};
-var theme = {
-  modal: modalStyle,
-  inner: modalInnerStyle,
-  title: modalTitleStyle,
-  subTitle: modalSubtitleStyle
+
+var convertTheme = function convertTheme(_ref) {
+  var outer = _ref.outer,
+      content = _ref.content,
+      original = _objectWithoutProperties(_ref, ["outer", "content"]);
+
+  return _objectSpread({}, original, {
+    modal: {
+      overlay: outer,
+      content: content
+    }
+  });
 };
 
-var LoadingModal = function LoadingModal(_ref) {
-  var children = _ref.children,
-      title = _ref.title,
-      subTitle = _ref.subTitle,
-      theme = _ref.theme,
-      props = _objectWithoutProperties(_ref, ["children", "title", "subTitle", "theme"]);
+var SpinnerResolver = function SpinnerResolver(_ref2) {
+  var type = _ref2.type,
+      config = _ref2.config;
+  return typeof type === 'string' ? _react.default.createElement(_reactSpinkit.default, {
+    name: type,
+    color: config.color,
+    fadeIn: config.fadeIn,
+    className: config.className,
+    overrideSpinnerClassName: config.overrideSpinnerClassName
+  }) : type;
+};
+
+var withTheme = function withTheme(WrappedComponent, baseTheme, converter) {
+  var _class, _temp;
+
+  return _temp = _class =
+  /*#__PURE__*/
+  function (_Component) {
+    _inherits(_class, _Component);
+
+    function _class(props) {
+      var _this;
+
+      _classCallCheck(this, _class);
+
+      _this = _possibleConstructorReturn(this, (_class.__proto__ || Object.getPrototypeOf(_class)).call(this, props));
+      Object.defineProperty(_assertThisInitialized(_this), "state", {
+        configurable: true,
+        enumerable: true,
+        writable: true,
+        value: {
+          theme: baseTheme || {},
+          lastUpdate: {}
+        }
+      });
+      _this.applyTheme = _this.applyTheme.bind(_assertThisInitialized(_this));
+      return _this;
+    }
+
+    _createClass(_class, [{
+      key: "componentWillMount",
+      value: function componentWillMount() {
+        this.applyTheme(this.props.theme);
+      }
+    }, {
+      key: "componentWillReceiveProps",
+      value: function componentWillReceiveProps(nextProps) {
+        if (nextProps.theme && this.state.lastUpdate !== nextProps.theme) {
+          this.applyTheme(nextProps.theme);
+        }
+      }
+    }, {
+      key: "applyTheme",
+      value: function applyTheme() {
+        var changes = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+        this.setState({
+          theme: converter ? converter((0, _deepmerge.default)(baseTheme, changes)) : (0, _deepmerge.default)(baseTheme, changes),
+          lastUpdate: changes
+        });
+      }
+    }, {
+      key: "render",
+      value: function render() {
+        return _react.default.createElement(WrappedComponent, _extends({
+          applyTheme: this.applyTheme
+        }, this.props, {
+          theme: this.state.theme
+        }));
+      }
+    }]);
+
+    return _class;
+  }(_react.Component), Object.defineProperty(_class, "propTypes", {
+    configurable: true,
+    enumerable: true,
+    writable: true,
+    value: {
+      theme: _propTypes.default.object
+    }
+  }), _temp;
+};
+
+var LoadingModal = function LoadingModal(_ref3) {
+  var children = _ref3.children,
+      title = _ref3.title,
+      subTitle = _ref3.subTitle,
+      spinner = _ref3.spinner,
+      spinnerConfig = _ref3.spinnerConfig,
+      theme = _ref3.theme,
+      props = _objectWithoutProperties(_ref3, ["children", "title", "subTitle", "spinner", "spinnerConfig", "theme"]);
 
   return _react.default.createElement(_reactModal.default, _extends({}, props, {
     style: theme.modal,
@@ -20171,18 +20405,32 @@ var LoadingModal = function LoadingModal(_ref) {
     style: theme.inner
   }, _react.default.createElement("h1", {
     style: theme.title
-  }, title), _react.default.createElement(_reactSpinkit.default, {
-    name: "line-scale-pulse-out",
-    color: "white"
+  }, title), _react.default.createElement(SpinnerResolver, {
+    type: spinner,
+    config: spinnerConfig
   }), _react.default.createElement("h2", {
     style: theme.subTitle
   }, subTitle), children));
 };
 
-LoadingModal.defaultProps = {
-  theme: theme
+LoadingModal.propTypes = {
+  spinner: _propTypes.default.oneOfType([_propTypes.default.oneOf(SPINNER_TYPES), _propTypes.default.element]),
+  spinnerConfig: _propTypes.default.shape({
+    fadeIn: _propTypes.default.oneOf(['none', 'quarter', 'half']),
+    className: _propTypes.default.string,
+    overrideSpinnerClassName: _propTypes.default.string,
+    color: _propTypes.default.string
+  })
 };
-var _default = LoadingModal;
+LoadingModal.defaultProps = {
+  spinner: 'line-scale-pulse-out',
+  spinnerConfig: {
+    color: 'white'
+  }
+};
+
+var _default = withTheme(LoadingModal, defaultTheme, convertTheme);
+
 exports.default = _default;
 
 /***/ }),

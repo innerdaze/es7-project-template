@@ -3,44 +3,69 @@ import React from 'react'
 import { storiesOf } from '@storybook/react'
 import { action } from '@storybook/addon-actions'
 import { linkTo } from '@storybook/addon-links'
+import { withInfo } from '@storybook/addon-info'
+import { text, object, select } from '@storybook/addon-knobs/react'
 
-import { Button, Welcome } from '@storybook/react/demo'
-import LoadingModal from '../src/index.jsx'
+import LoadingModal, { SPINNER_TYPES } from '../src/index.jsx'
 
-storiesOf('Welcome', module).add('to Storybook', () => (
-  <Welcome showApp={linkTo('Button')} />
-))
-
-// storiesOf('Button', module)
-//   .add('with text', () => <Button onClick={action('clicked')}>Hello Button</Button>)
-//   .add('with some emoji', () => <Button onClick={action('clicked')}>😀 😎 👍 💯</Button>);
+const getCommonConfig = () => ({
+  title: text('Title', 'Loading'),
+  subTitle: text('Sub Title', 'More info'),
+  isOpen: true
+})
 
 storiesOf('LoadingModal', module)
-  .add('default theme', () => (
-    <LoadingModal title='Loading' subTitle='Sub Title' isOpen={true} />
-  ))
-  .add('custom theme', () => (
-    <LoadingModal
-      title='Loading'
-      subTitle='Sub Title'
-      isOpen={true}
-      theme={{
-        modal: { overlay: { backgroundColor: 'aqua' } },
-        title: {
-          fontFamily: 'Roboto-Light',
-          fontWeight: 100,
-          letterSpacing: '50px',
-          paddingLeft: '50px',
-          marginBottom: '3.2em'
-        },
-        subTitle: {
-          fontFamily: 'tahoma',
-          fontStyle: 'normal',
-          marginTop: '3.8em',
-          letterSpacing: '30px',
-          paddingLeft: '30px',
-          textTransform: 'uppercase'
-        }
-      }}
-    />
-  ))
+  .addDecorator((story, context) => withInfo('common info')(story)(context))
+  .addWithJSX('simple', () => <LoadingModal {...getCommonConfig()} />, {
+    displayName: 'LoadingModal'
+  })
+  .addWithJSX(
+    'custom theme',
+    () => (
+      <LoadingModal
+        {...getCommonConfig()}
+        spinnerConfig={object('Spinner Config', {
+          color: '#ef32d9'
+        })}
+        theme={object('Theme', {
+          outer: { backgroundColor: '#89fffd' },
+          content: { color: '#ef32d9' },
+          inner: {
+            height: '100%',
+            justifyContent: 'space-evenly'
+          },
+          title: {
+            fontFamily: 'Roboto-Light',
+            fontWeight: 100,
+            letterSpacing: '50px',
+            paddingLeft: '50px'
+          },
+          subTitle: {
+            fontFamily: 'tahoma',
+            fontStyle: 'normal',
+            letterSpacing: '30px',
+            paddingLeft: '30px',
+            textTransform: 'uppercase'
+          }
+        })}
+      />
+    ),
+    { displayName: 'LoadingModal' }
+  )
+  .addWithJSX(
+    'alternative spinner',
+    () => (
+      <LoadingModal
+        {...getCommonConfig()}
+        spinner={select('Spinner', SPINNER_TYPES, 'folding-cube')}
+        spinnerConfig={object('Spinner Config', {
+          color: '#BFE6BA',
+          fadeIn: 'half'
+        })}
+        theme={object('Theme', {
+          outer: { backgroundColor: '#D3959B' }
+        })}
+      />
+    ),
+    { displayName: 'LoadingModal' }
+  )
