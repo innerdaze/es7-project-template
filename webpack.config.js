@@ -30,7 +30,7 @@ module.exports = {
     rules: [
       {
         test: /\.(js|jsx)$/,
-        include: /src/,
+        include: /(util|src)/,
         use: [
           {
             loader: 'babel-loader'

@@ -794,6 +794,12 @@
     lodash "^4.2.0"
     to-fast-properties "^2.0.0"
 
+"@bit/innerdaze.orbis.hoc.theme@1.0.0":
+  version "1.0.0"
+  resolved "https://node.bitsrc.io/innerdaze.orbis.hoc.theme/-/innerdaze.orbis.hoc.theme-1.0.0.tgz#b556104a5244548fe5f2ca4ebceaa5074755a53c"
+  dependencies:
+    prop-types "15.6.1"
+
 "@sindresorhus/is@^0.7.0":
   version "0.7.0"
   resolved "https://registry.yarnpkg.com/@sindresorhus/is/-/is-0.7.0.tgz#9a06f4f137ee84d7df0460c1fdb1135ffa6c50fd"
@@ -7368,7 +7374,7 @@ promise@^7.1.1:
   dependencies:
     asap "~2.0.3"
 
-prop-types@^15.5.10, prop-types@^15.5.4, prop-types@^15.5.6, prop-types@^15.5.7, prop-types@^15.5.8, prop-types@^15.5.9, prop-types@^15.6.0:
+prop-types@15.6.1, prop-types@^15.5.10, prop-types@^15.5.4, prop-types@^15.5.6, prop-types@^15.5.7, prop-types@^15.5.8, prop-types@^15.5.9, prop-types@^15.6.0:
   version "15.6.1"
   resolved "https://registry.yarnpkg.com/prop-types/-/prop-types-15.6.1.tgz#36644453564255ddda391191fb3a125cbdf654ca"
   dependencies:

@@ -66,5 +66,8 @@
     "extends": [
       "react-app"
     ]
+  },
+  "dependencies": {
+    "@bit/innerdaze.orbis.hoc.theme": "1.0.0"
   }
 }

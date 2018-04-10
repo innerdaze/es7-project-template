@@ -5,9 +5,14 @@ import Spinner from 'react-spinkit'
 import merge from 'deepmerge'
 import { v4 } from 'uuid'
 import injectSheet, { ThemeProvider } from 'react-jss'
+import withTheme from '@bit/innerdaze.orbis.hoc.theme'
 import font from './assets/css/fonts.css'
 
 /**
+ * # Status / Loading
+ * 
+ * MODAL -> CONTENT -> INNER -> [TITLE, SPINNER, SUB TITLE, CHILDREN]
+ * 
 _________ MODAL _________
 |                       |
 | ______ CONTENT ______ |
@@ -119,53 +124,7 @@ const SpinnerResolver = ({ type, config = {}, theme = {} }) => {
   }
 }
 
-const withTheme = (WrappedComponent, baseTheme, converter) => {
-  return class extends Component {
-    static propTypes = {
-      theme: PropTypes.object
-    }
 
-    state = {
-      theme: baseTheme || {},
-      lastUpdate: {}
-    }
-
-    constructor(props) {
-      super(props)
-
-      this.applyTheme = this.applyTheme.bind(this)
-    }
-
-    componentWillMount() {
-      this.applyTheme(this.props.theme)
-    }
-
-    componentWillReceiveProps(nextProps) {
-      if (nextProps.theme && this.state.lastUpdate !== nextProps.theme) {
-        this.applyTheme(nextProps.theme)
-      }
-    }
-
-    applyTheme(changes = {}) {
-      this.setState({
-        theme: converter
-          ? converter(merge(baseTheme, changes))
-          : merge(baseTheme, changes),
-        lastUpdate: changes
-      })
-    }
-
-    render() {
-      return (
-        <WrappedComponent
-          {...this.props}
-          applyTheme={this.applyTheme}
-          theme={this.state.theme}
-        />
-      )
-    }
-  }
-}
 
 const LoadingModal = ({
   children,
